@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Happy Birthday!</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #11101c;
+            font-family: "Courier New", monospace;
+            overflow: hidden;
+        }
+
+        #game {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screen {
+            width: min(100vw, 1200px);
+            height: min(100vh, 700px);
+
+            position: relative;
+            overflow: hidden;
+
+            background-image: url("images/background.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+
+            image-rendering: pixelated;
+        }
+
+        .title {
+            position: absolute;
+            top: 12%;
+            width: 100%;
+
+            text-align: center;
+
+            color: #ff8fbb;
+            font-size: clamp(28px, 5vw, 65px);
+            font-weight: bold;
+
+            text-shadow:
+                3px 3px #6b315f,
+                -2px -2px #fff;
+        }
+
+        .speech {
+            position: absolute;
+
+            background: white;
+            border: 5px solid #f18ab7;
+            border-radius: 20px;
+
+            padding: 20px;
+
+            width: 45%;
+
+            right: 8%;
+            top: 40%;
+
+            color: #b65d93;
+
+            font-size: clamp(18px, 2.2vw, 32px);
+            font-weight: bold;
+
+            text-align: center;
+        }
+
+        .speech::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -25px;
+            left: 25%;
+
+            width: 35px;
+            height: 35px;
+
+            background: white;
+
+            border-right: 5px solid #f18ab7;
+            border-bottom: 5px solid #f18ab7;
+
+            transform: rotate(45deg);
+        }
+
+        .button {
+            position: absolute;
+
+            left: 50%;
+            transform: translateX(-50%);
+
+            bottom: 15%;
+
+            padding: 15px 35px;
+
+            border: 5px solid #75345f;
+
+            background: #ef71a7;
+            color: #fff;
+
+            font-family: "Courier New", monospace;
+            font-size: 24px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow: 6px 6px #70335d;
+        }
+
+        .button:hover {
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .character {
+            position: absolute;
+
+            left: 5%;
+            bottom: 12%;
+
+            width: 450px;
+
+            image-rendering: pixelated;
+        }
+        .couple {
+            position: absolute;
+            width: 400px;
+            left: 20%;
+            bottom: 12%;
+            transform: translateX(-50%);
+            image-rendering: pixelated;
+        }
+        .heart {
+            position: absolute;
+            width: 600px;
+            right: 0.5%;
+            top: 15%;
+            image-rendering: pixelated;
+        }
+
+        /* PASSWORD */
+
+        .password-screen {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .couple-side {
+            width: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .couple-side img {
+            width: 500px;
+            max-width: 90%;
+            height: auto;
+            image-rendering: pixelated;
+        }
+
+        .keypad-side {
+            width: 50%;
+            background: #ffd7ec;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .password-title {
+            color: #8f6cae;
+            font-size: 32px;
+            font-weight: bold;
+
+            margin-bottom: 20px;
+        }
+
+        .password-display {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .digit-box {
+            width: 48px;
+            height: 48px;
+
+            border: 4px solid #ef8ab5;
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+            font-size: 24px;
+
+            color: #8e5c86;
+        }
+
+        .keypad {
+            display: grid;
+
+            grid-template-columns: repeat(3, 65px);
+
+            gap: 10px;
+        }
+
+        .key {
+            width: 65px;
+            height: 55px;
+
+            border: none;
+
+            background: #ffb1d0;
+
+            color: #9b527b;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+        }
+
+        .key:hover {
+            background: #f48db6;
+        }
+
+        /* GIFTS */
+
+        .gift-container {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 50px;
+
+            position: absolute;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -20%);
+        }
+
+        .gift {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gift img,
+        .gift-container img {
+            width: 250px !important;
+            max-width: 250px !important;
+            height: auto !important;
+            display: block;
+            image-rendering: pixelated;
+        }
+
+        .gift:hover {
+            transform: translateY(-10px) scale(1.08);
+        }
+
+        .gift:hover {
+            transform: translateY(-12px) scale(1.08);
+        }
+
+        /* LETTER */
+
+        .letter {
+            position: absolute;
+
+            width: 75%;
+            height: 70%;
+
+            left: 50%;
+            top: 47%;
+
+            transform: translate(-50%, -50%);
+
+            background: #d9c493;
+
+            border: 8px solid #a68d58;
+
+            padding: 35px;
+
+            font-family: monospace;
+
+            font-size: 18px;
+
+            color: #1f1d1d;
+
+            line-height: 1.35;
+
+            overflow-y: auto;
+        }
+
+        .letter-button {
+            position: absolute;
+
+            left: 50%;
+            bottom: 5%;
+
+            transform: translateX(-50%);
+
+            padding: 15px 35px;
+
+            border: 5px solid #75345f;
+
+            background: #ef71a7;
+            color: white;
+
+            font-family: "Courier New", monospace;
+            font-size: 22px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow: 6px 6px #70335d;
+        }
+        /* PHOTOS */
+
+        .photos {
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo {
+            position: absolute;
+
+            width: 220px;
+            height: 260px;
+
+            background: white;
+
+            padding: 10px;
+
+            box-shadow: 8px 8px rgba(0,0,0,.2);
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .photo1 {
+            transform: rotate(-18deg);
+            left: 18%;
+        }
+
+        .photo2 {
+            transform: rotate(12deg);
+            left: 38%;
+        }
+
+        .photo3 {
+            transform: rotate(20deg);
+            left: 58%;
+        }
+
+        /* MUSIC */
+
+        .music-box {
+            position: absolute;
+
+            left: 50%;
+            top: 55%;
+
+            transform: translate(-50%, -50%);
+
+            width: 500px;
+
+            background: #e4b8ed;
+
+            border: 6px solid #754075;
+            border-radius: 18px;
+
+            padding: 25px;
+
+            box-shadow:
+                8px 8px 0 #65345f,
+                0 0 20px rgba(255, 180, 220, 0.6);
+
+            text-align: center;
+        }
+
+        .music-title {
+            font-weight: bold;
+            color: #6d4774;
+
+            font-size: 20px;
+
+            margin-bottom: 18px;
+
+            text-shadow: 2px 2px #f8dff4;
+        }
+
+        .music-box audio {
+            width: 100%;
+        }
+        .song-name {
+            color: #8c5b8f;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .speech {
+                width: 50%;
+                font-size: 14px;
+            }
+
+            .character {
+                font-size: 90px;
+            }
+
+            .couple-side {
+                font-size: 80px;
+            }
+
+            .keypad {
+                grid-template-columns: repeat(3, 48px);
+            }
+
+            .key {
+                width: 48px;
+                height: 45px;
+                font-size: 16px;
+            }
+
+            .digit-box {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            .letter {
+                font-size: 15px;
+                padding: 20px;
+            }
+
+            .gift {
+                font-size: 20px;
+            }
+
+            .gift-container {
+                gap: 10px;
+            }
+
+            .photo {
+                width: 120px;
+                height: 150px;
+            }
+
+            .music-box {
+                width: 75%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <!-- SCREEN 1 -->
+
+    <div class="screen" id="screen1">
+
+        <img class="character" src="images/girl.png">
+
+        <div class="speech">
+            Hi Pretty!<br>
+            Here's a little gift <br>
+            I love you so much ♡
+        </div>
+
+        <button class="button" onclick="showScreen(2)">
+            →
+        </button>
+
+    </div>
+
+
+    <!-- SCREEN 2 PASSWORD -->
+
+    <div class="screen hidden" id="screen2">
+
+        <div class="password-screen">
+
+            <div class="couple-side">
+                 <img src="images/couple2.png" alt="Couple">
+            </div>
+
+            <div class="keypad-side">
+
+                <div class="password-title">
+                    Guess the password
+                </div>
+
+                <div class="password-display">
+
+                    <div class="digit-box" id="box1">★</div>
+                    <div class="digit-box" id="box2">★</div>
+                    <div class="digit-box" id="box3">★</div>
+                    <div class="digit-box" id="box4">★</div>
+
+                </div>
+
+                <div class="keypad">
+
+                    <button class="key" onclick="enterNumber(1)">1</button>
+                    <button class="key" onclick="enterNumber(2)">2</button>
+                    <button class="key" onclick="enterNumber(3)">3</button>
+
+                    <button class="key" onclick="enterNumber(4)">4</button>
+                    <button class="key" onclick="enterNumber(5)">5</button>
+                    <button class="key" onclick="enterNumber(6)">6</button>
+
+                    <button class="key" onclick="enterNumber(7)">7</button>
+                    <button class="key" onclick="enterNumber(8)">8</button>
+                    <button class="key" onclick="enterNumber(9)">9</button>
+
+                    <button class="key">*</button>
+                    <button class="key" onclick="enterNumber(0)">0</button>
+                    <button class="key">#</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SCREEN 3 -->
+
+    <div class="screen hidden" id="screen3">
+
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+
+        <div class="title">
+            HAPPY<br>
+            2 MONTHS<br>
+            BABY!
+        </div>
+
+        <img class="couple" src="images/couple.png">
+        <img class="heart" src="images/heart.png">
+
+        <button class="button" onclick="showScreen(4)">
+            START
+        </button>
+
+    </div>
+
+
+    <!-- SCREEN 4 -->
+
+   <div class="screen hidden" id="screen4">
+
+    <img class="character screen4-girl" src="images/girl.png">
+
+    <div class="speech">
+        Hi Baby!<br>
+        Enjoy this cutie gift mwah!!! 
+    </div>
+
+    <button class="button" onclick="showScreen(5)">
+        →
+    </button>
+
+</div>
+
+
+<!-- SCREEN 5: CHOOSE YOUR GIFTS -->
+
+<div class="screen hidden" id="screen5">
+
+    <div class="title">
+        Choose Your Gifts
+    </div>
+
+    <div class="gift-container">
+
+        <div class="gift" onclick="showScreen(6)">
+            <img src="images/gift.png">
+        </div>
+
+       <div class="gift" onclick="showScreen(9)">
+            <img src="images/gift.png">
+        </div>
+
+        <div class="gift" onclick="showScreen(12)">
+            <img src="images/gift.png">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SCREEN 6: GIFT 1 OPENING -->
+
+<div class="screen hidden" id="screen6">
+
+    <div class="title">
+        A Little Gift For You ♡ 
+    </div>
+
+    <div class="gift-container">
+
+       <div class="gift">
+            <img src="images/gift.png">
+        </div>
+    </div>
+
+    <button class="button" onclick="showScreen(7)">
+        OPEN →
+    </button>
+
+</div>
+
+
+<!-- SCREEN 7: GIFT 1 -->
+
+<div class="screen hidden" id="screen7">
+
+    <div class="letter">
+
+        ♡<br><br>
+
+        Hi Baby<br>
+        I love you so much
+
+        <br><br>
+
+        Dear Kai ~
+         Happy  2 months!! I know this is a not a lot again hehe, but to me these little milestones mean so so much to me, and I couldn't be more happy to be celebrating them with you. I love you so much. I wish we could spend this day together, in each others arms, dreaming and talking about everything we have ever wanted, but since I am un able to be with you, this letter will have to suffice. Thank you so much for being mine, I  couldn't have asked for a better man. You make me so happy everyday, nonstop. I wake up and my first thought is you, I go to work thinking of you, every second of the day I wish I was with you. Even in my dreams I can't escape you, I find you everywhere. And I wouldn't want it any other way. I love looking back at us, and our memories together. I think about our time at Oberlin so often. How easy it was for me to see you, I took that for granted. I know even though we saw each other everyday, somehow I still wish we spent more time together. Though I don't know how plausible that would have been, but a girl can dream. Every time you called me to hangout, I was so happy. Knowing you wanted to see me, talk to me, be with me, it was so special, and I will forever hold that close to my heart. Thank you so much for inviting me to make salt bread with you, that was the start of this all. Every second after that I have enjoyed being with you Kai. I wish we could be with each other right now, so I could look at you, hold you, and kiss you. You mean so much to me and I continue to fall in love with you every second of everyday. I can't wait till the next time we get to see each other, whenever that may be. But I promise to love you more and more everyday, I promise to call you, text you everyday and I promise to be your, from now until forever baby. I love you so so much, and I miss you with all my heart. 
+
+
+    </div>
+
+    <button class="letter-button" onclick="showScreen(5)">
+         ← GIFTS
+    </button>
+
+</div>
+
+
+<!-- SCREEN 9: GIFT 2 OPENING -->
+
+<div class="screen hidden" id="screen9">
+
+    <div class="title">
+        A Little Gift For You ♡
+    </div>
+
+    <div class="gift-container">
+
+        <div class="gift">
+            <img src="images/gift.png">
+        </div>
+
+    </div>
+
+    <button class="button" onclick="showScreen(10)">
+        OPEN →
+    </button>
+
+</div>
+
+
+<!-- SCREEN 10: GIFT 2 -->
+
+<div class="screen hidden" id="screen10">
+
+    <div class="photos">
+
+        <div class="photo photo1">
+            <img src="images/photo1.jpg">
+        </div>
+
+        <div class="photo photo2">
+            <img src="images/photo2.jpeg">
+        </div>
+
+        <div class="photo photo3">
+            <img src="images/photo3.jpeg">
+        </div>
+
+    </div>
+
+    <button class="button" onclick="showScreen(5)">
+        ← GIFTS
+    </button>
+
+</div>
+
+
+<!-- SCREEN 12: GIFT 3 OPENING -->
+
+<div class="screen hidden" id="screen12">
+
+    <div class="title">
+        A Little Gift For You ♡
+    </div>
+
+    <div class="gift-container">
+
+        <div class="gift">
+            <img src="images/gift.png">
+        </div>
+
+    </div>
+
+    <button class="button" onclick="showScreen(13)">
+        OPEN →
+    </button>
+
+</div>
+
+
+<!-- SCREEN 13: GIFT 3 -->
+
+<div class="screen hidden" id="screen13">
+
+    <div class="title">
+        Song<br>
+        For You ~
+    </div>
+
+    <div class="music-box">
+
+        <div class="music-title">
+         ♫ Now Playing ♡
+    </div>
+
+        <div class="song-name">
+    Fell In Luv ♡
+    </div>
+
+        <audio controls>
+
+            <source
+                src="images/song.mp3"
+                type="audio/mpeg">
+
+        </audio>
+
+    </div>
+
+    <button class="button" onclick="showScreen(14)">
+         FINISH ♡
+    </button>
+
+    </div>
+
+
+<!-- SCREEN 14: FINAL ANNIVERSARY -->
+
+<div class="screen hidden" id="screen14">
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div class="title">
+        HAPPY<br>
+        ANNIVERSARY! 
+        ♡
+    </div>
+
+    <div class="speech" style="top: 40%; left: 25%; width: 50%;">
+
+        I love you so much ♡<br><br>
+
+        Thank you for being mine <br>
+        and loving me everyday <br><br>
+
+        I can't wait to have many many more memeories with you baby <br> 
+
+    </div>
+
+</div>
+
+</div>
+
+    <!-- SCREEN 9 SONG -->
+
+    <div class="screen hidden" id="screen9">
+
+        <div class="title">
+            Song<br>
+            For<br>
+            You 💗
+        </div>
+
+        <div class="music-box">
+
+            <div class="music-title">
+                ♫ Now Playing
+            </div>
+
+            <audio controls>
+
+                <source
+                    src="images/song.mp3"
+                    type="audio/mpeg">
+
+            </audio>
+
+        </div>
+
+        <div class="character">
+            💗
+        </div>
+
+        <button class="button" onclick="showScreen(4)">
+            →
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let currentPassword = "";
+
+    const correctPassword = "0826";
+
+
+    function showScreen(number) {
+
+        document.querySelectorAll(".screen")
+            .forEach(screen => {
+
+                screen.classList.add("hidden");
+
+            });
+
+        document
+            .getElementById("screen" + number)
+            .classList.remove("hidden");
+
+    }
+
+
+    function enterNumber(number) {
+
+        if (currentPassword.length >= 4) {
+            return;
+        }
+
+        currentPassword += number;
+
+        updatePasswordDisplay();
+
+
+        if (currentPassword.length === 4) {
+
+            if (currentPassword === correctPassword) {
+
+                setTimeout(() => {
+
+                    showScreen(3);
+
+                }, 700);
+
+            } else {
+
+                setTimeout(() => {
+
+                    currentPassword = "";
+
+                    updatePasswordDisplay();
+
+                    alert("Wrong password!");
+
+                }, 300);
+
+            }
+
+        }
+
+    }
+
+
+    function updatePasswordDisplay() {
+
+        for (let i = 1; i <= 4; i++) {
+
+            const box = document.getElementById("box" + i);
+
+            if (currentPassword[i - 1]) {
+
+                box.textContent = currentPassword[i - 1];
+
+            } else {
+
+                box.textContent = "★";
+
+            }
+
+        }
+
+    }
+
+</script>
+
+</body>
+</html>
